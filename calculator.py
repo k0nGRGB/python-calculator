@@ -1,26 +1,37 @@
+from decimal import Decimal
 class Calculator:
     def add(self, a, b):
         return a + b
 
     def subtract(self, a, b):
-        return b - a
+        return a - b
 
     def multiply(self, a, b):
+        a, b = (b, a) if b < 0 or isinstance(b, (float, Decimal)) else (a, b)
+        a, b = (-a, -b) if a < 0 and b < 0 else (a, b)
         result = 0
-        for i in range(b+1):
+        for i in range(b):
             result = self.add(result, a)
         return result
 
     def divide(self, a, b):
+        if b == 0:
+            raise ZeroDivisionError("Cannot divide by zero.")
+        if a == 0:
+            return 0
         result = 0
-        while a > b:
+        negative = (a < 0) != (b < 0)
+        a,b = abs(a), abs(b)
+        while a >= b:
             a = self.subtract(a, b)
             result += 1
-        return result
+        return -result if negative else result
     
     def modulo(self, a, b):
-        while a <= b:
-            a = a-b
+        if b == 0:
+            raise ZeroDivisionError("Cannot divide by zero.")
+        while a >= b:
+            a = a - b
         return a
 
 # Example usage:
